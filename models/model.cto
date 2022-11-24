@@ -1,0 +1,91 @@
+/*
+ * Concert Ticket Booking
+ */
+
+namespace org.ticketbooking.network
+
+participant Member identified by memberID {   
+  o String memberID                          
+  o String firstName
+  o String lastName
+  o String email
+  o Integer SSN
+}
+
+participant EventHost identified by eventHostID {   
+  o String eventHostID                              
+  o String firstName
+  o String lastName
+  o String email
+  o Integer SSN
+}
+
+asset TicketEvent identified by eventID {    
+  o String eventID                            
+  o String date
+  o String description
+  o String venue
+  o EventType eventType
+  o Integer noOfTickets
+  o Integer marketPrice
+  --> EventHost eventHost
+}
+
+asset TicketListing identified by ticketListingID {    
+  o String ticketListingID                            
+  o String state optional                                      
+  o Integer listingPrice
+  --> Ticket ticket
+}
+
+asset Ticket identified by ticketID {   
+  o String ticketID                     
+  o String seatID                       
+  o TicketState ticketState
+  o Double faceValue
+  o Double salePrice optional
+  --> TicketEvent event
+  --> Member owner
+  --> Member lastOwner
+}
+
+transaction CreateEvent {   
+  o String eventID
+  o String date
+  o String description
+  o String venue
+  o EventType eventType
+  o Integer noOfTickets
+  o Integer faceValue optional
+  --> EventHost eventHost
+}
+
+transaction SellTicket {    
+  o String orderID
+  o String salePrice
+  o Ticket ticket
+  --> Member buyer
+}
+
+transaction ResellTicket {    
+  o String orderID
+  o String salePrice
+  o TicketListing ticketListing
+  --> Member buyer
+}
+
+transaction UseTicket {  
+  o Ticket ticket
+}
+
+enum EventType {
+  o RESERVED
+  o OPEN_SEATING
+}
+
+enum TicketState {
+  o UNSOLD
+  o SALE
+  o RESALE
+  o USED
+}
